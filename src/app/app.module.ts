@@ -11,6 +11,8 @@ import {PastTrainingsComponent} from './training/past-trainings/past-trainings.c
 import {NewTrainingComponent} from './training/new-training/new-training.component';
 import {WelcomeComponent} from './welcome/welcome.component';
 import {AppRoutingModule} from "./app.routing.module";
+import {FlexLayoutModule} from "@angular/flex-layout";
+
 
 @NgModule({
   declarations: [
@@ -21,13 +23,14 @@ import {AppRoutingModule} from "./app.routing.module";
     CurrentTrainingComponent,
     PastTrainingsComponent,
     NewTrainingComponent,
-    WelcomeComponent
+    WelcomeComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FlexLayoutModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
