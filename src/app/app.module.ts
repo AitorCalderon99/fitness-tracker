@@ -12,6 +12,7 @@ import {NewTrainingComponent} from './training/new-training/new-training.compone
 import {WelcomeComponent} from './welcome/welcome.component';
 import {AppRoutingModule} from "./app.routing.module";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 
 @NgModule({
@@ -31,6 +32,8 @@ import {FlexLayoutModule} from "@angular/flex-layout";
     MaterialModule,
     AppRoutingModule,
     FlexLayoutModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
