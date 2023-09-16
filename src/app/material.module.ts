@@ -6,6 +6,9 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatNativeDateModule} from "@angular/material/core";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatListModule} from "@angular/material/list";
 
 const angularMatModules = [
   MatButtonModule,
@@ -15,6 +18,9 @@ const angularMatModules = [
   MatNativeDateModule,
   MatDatepickerModule,
   MatCheckboxModule,
+  MatSidenavModule,
+  MatToolbarModule,
+  MatListModule,
 ];
 
 @NgModule({
