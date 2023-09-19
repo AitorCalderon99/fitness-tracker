@@ -6,5 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./training.component.scss']
 })
 export class TrainingComponent {
+  onGoingTraining: boolean = false;
+
 
 }
