@@ -30,4 +30,8 @@ export class SidenavListComponent {
     this.closeSideNav.emit();
   }
 
+  onLogOut() {
+    this.onCloseSidenav();
+    this.authService.logout();
+  }
 }
