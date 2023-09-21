@@ -12,7 +12,7 @@ export class TrainingService {
     {id: 'burpees', name: 'Burpees', duration: 60, calories: 8}
   ];
 
-  private runningExercise: Exercise | undefined;
+  private runningExercise?: Exercise;
 
   public getExercises(): Exercise[] {
     return this.availableExercises
@@ -21,5 +21,9 @@ export class TrainingService {
   public startExercise(selectedId: string) {
     this.runningExercise = <Exercise>this.availableExercises.find(exercise => exercise.id === selectedId);
     this.exerciseChanged.next({...this.runningExercise});
+  }
+
+  getRunningExercise(): Exercise | undefined {
+    return <Exercise>{...this.runningExercise};
   }
 }
