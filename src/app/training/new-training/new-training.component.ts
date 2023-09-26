@@ -1,22 +1,22 @@
 import {Component, OnInit} from '@angular/core';
 import {TrainingService} from "../training.service";
-import {Exercise} from "../exercise.model";
 import {NgForm} from "@angular/forms";
+import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-new-training',
   templateUrl: './new-training.component.html',
   styleUrls: ['./new-training.component.scss']
 })
-export class NewTrainingComponent implements OnInit{
-  availableTrainings: Exercise[] = [];
+export class NewTrainingComponent implements OnInit {
+  exercises: Observable<any>;
 
-  constructor(private trainingService: TrainingService) {
+  constructor(private trainingService: TrainingService, private angularFirestore: AngularFirestore) {
   }
 
   ngOnInit() {
-    this.availableTrainings = this.trainingService.getAvailableExercises();
-    console.log(this.availableTrainings);
+    this.exercises = this.angularFirestore.collection('availableExercises').valueChanges();
   }
 
   onStartTraining(trainingForm: NgForm) {
