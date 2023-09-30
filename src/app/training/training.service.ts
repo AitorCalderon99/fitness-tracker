@@ -1,5 +1,5 @@
 import {Exercise} from "./exercise.model";
-import {Subject} from "rxjs";
+import {Subject, Subscription} from "rxjs";
 import {map} from "rxjs/operators";
 import {Injectable} from "@angular/core";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
@@ -12,23 +12,29 @@ export class TrainingService {
   finishedExercisesChanged = new Subject<Exercise[]>();
   private availableExercises: Exercise[] = [];
   private runningExercise: Exercise | null | undefined;
+  private firebaseSubscriptions: Subscription[] = [];
 
   constructor(private angularFirestore: AngularFirestore) {
   }
 
   public fetchAvailableExercises(): void {
-    this.angularFirestore.collection('availableExercises')
+    this.firebaseSubscriptions.push(this.angularFirestore.collection('availableExercises')
       .snapshotChanges().pipe(map(docArray => {
-      return docArray.map(doc => {
-        return {
-          id: doc.payload.doc.id,
-          ...(doc.payload.doc.data() as Exercise)
+        return docArray.map(doc => {
+          return {
+            id: doc.payload.doc.id,
+            ...(doc.payload.doc.data() as Exercise)
+          }
+        })
+      })).subscribe({
+        next: (exercises: Exercise[]) => {
+          this.availableExercises = exercises;
+          this.exercisesChanged.next([...this.availableExercises]);
+        },
+        error: (error) => {
+          console.log(error);
         }
-      })
-    })).subscribe((exercises: Exercise[]) => {
-      this.availableExercises = exercises;
-      this.exercisesChanged.next([...this.availableExercises]);
-    });
+      }));
   }
 
   public startExercise(selectedId: string) {
@@ -63,10 +69,17 @@ export class TrainingService {
   }
 
   public fetchCompletedOrCanceledExercises() {
-    this.angularFirestore.collection('finishedExercises')
+    this.firebaseSubscriptions.push(this.angularFirestore.collection('finishedExercises')
       .valueChanges()
-      .subscribe((exercises: Exercise[]) => {
-        this.finishedExercisesChanged.next(exercises);
-      });
+      .subscribe({
+        next: (exercises: Exercise[]) => {
+          this.finishedExercisesChanged.next(exercises);
+        },
+        error: (error) => console.log(error)
+      }))
+  }
+
+  public cancelSubscriptions(): void {
+    this.firebaseSubscriptions.forEach((sub: Subscription) => sub.unsubscribe());
   }
 }
