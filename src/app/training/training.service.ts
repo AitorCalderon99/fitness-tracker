@@ -9,6 +9,7 @@ export class TrainingService {
 
   exerciseChanged = new Subject<Exercise | null>();
   exercisesChanged = new Subject<Exercise[]>();
+  finishedExercisesChanged = new Subject<Exercise[]>();
   private availableExercises: Exercise[] = [];
   private runningExercise: Exercise | null | undefined;
 
@@ -35,10 +36,6 @@ export class TrainingService {
     this.exerciseChanged.next({...this.runningExercise});
   }
 
-  public stopExercise() {
-    this.runningExercise = null;
-  }
-
   public completeExercise() {
     this.addDataToDb(<Exercise>{...this.runningExercise, date: new Date(), state: "completed"});
     this.runningExercise = null;
@@ -61,7 +58,15 @@ export class TrainingService {
     return <Exercise>{...this.runningExercise};
   }
 
-  private addDataToDb(exercise: Exercise){
+  private addDataToDb(exercise: Exercise) {
     this.angularFirestore.collection('finishedExercises').add(exercise);
+  }
+
+  public fetchCompletedOrCanceledExercises() {
+    this.angularFirestore.collection('finishedExercises')
+      .valueChanges()
+      .subscribe((exercises: Exercise[]) => {
+        this.finishedExercisesChanged.next(exercises);
+      });
   }
 }
