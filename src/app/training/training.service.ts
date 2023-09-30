@@ -9,12 +9,8 @@ export class TrainingService {
 
   exerciseChanged = new Subject<Exercise | null>();
   exercisesChanged = new Subject<Exercise[]>();
-
-
   private availableExercises: Exercise[] = [];
-
   private runningExercise: Exercise | null | undefined;
-  private exercises: Exercise[] = [];
 
   constructor(private angularFirestore: AngularFirestore) {
   }
@@ -44,13 +40,13 @@ export class TrainingService {
   }
 
   public completeExercise() {
-    this.exercises.push(<Exercise>{...this.runningExercise, date: new Date(), state: "completed"});
+    this.addDataToDb(<Exercise>{...this.runningExercise, date: new Date(), state: "completed"});
     this.runningExercise = null;
     this.exerciseChanged.next(null);
   }
 
   public cancelExercise(progress: number) {
-    this.exercises.push(<Exercise>{
+    this.addDataToDb(<Exercise>{
       ...this.runningExercise,
       duration: this.runningExercise?.duration ? this.runningExercise.duration * (progress / 100) : undefined,
       calories: this.runningExercise?.calories ? this.runningExercise.calories * (progress / 100) : undefined,
@@ -65,8 +61,7 @@ export class TrainingService {
     return <Exercise>{...this.runningExercise};
   }
 
-
-  public getCompletedOrCanceledExercises(): Exercise[] {
-    return this.exercises.slice();
+  private addDataToDb(exercise: Exercise){
+    this.angularFirestore.collection('finishedExercises').add(exercise);
   }
 }
