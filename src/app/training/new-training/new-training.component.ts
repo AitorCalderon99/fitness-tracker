@@ -11,8 +11,10 @@ import {Exercise} from "../exercise.model";
   styleUrls: ['./new-training.component.scss']
 })
 export class NewTrainingComponent implements OnInit, OnDestroy {
+
   exercises: Exercise[];
   exercisesSubscription: Subscription;
+  isLoading: boolean = true;
 
   constructor(private trainingService: TrainingService) {
   }
@@ -20,6 +22,7 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.exercisesSubscription = this.trainingService.exercisesChanged.subscribe((exercises: Exercise[]) => {
       this.exercises = exercises;
+      this.isLoading = false;
     })
     this.trainingService.fetchAvailableExercises();
 

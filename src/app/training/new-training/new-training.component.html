@@ -3,15 +3,16 @@
     <mat-card fxFlex.xs="100%" fxFlex="400px">
       <mat-card-title fxLayoutAlign="center">Time to start workout</mat-card-title>
       <mat-card-content fxLayoutAlign="center">
-        <mat-form-field>
+        <mat-form-field  *ngIf="!isLoading">
           <mat-select placeholder="Select exercise" ngModel name="trainingSelect" required>
             <mat-option *ngFor="let training of exercises" [value]="training.id">
               {{training.name}}
             </mat-option>
           </mat-select>
         </mat-form-field>
+        <mat-spinner *ngIf="isLoading"></mat-spinner>
       </mat-card-content>
-      <mat-card-actions fxLayoutAlign="center">
+      <mat-card-actions fxLayoutAlign="center" *ngIf="!isLoading">
         <button mat-button type="submit" [disabled]="!newTrainingForm.valid">Start</button>
       </mat-card-actions>
     </mat-card>
