@@ -1,15 +1,20 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../auth.service";
+import {UiService} from "../../shared/ui.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy{
 
-  constructor(private authService: AuthService) {
+  private spinnerSub = new Subscription();
+  isLoading = false;
+
+  constructor(private authService: AuthService, private uiService: UiService) {
   }
 
   loginForm: FormGroup = new FormGroup({
@@ -24,4 +29,11 @@ export class LoginComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.spinnerSub = this.uiService.loadingStateChanged.subscribe((isLoading: boolean) => this.isLoading = isLoading);
+  }
+
+  ngOnDestroy() {
+    this.spinnerSub.unsubscribe();
+  }
 }
