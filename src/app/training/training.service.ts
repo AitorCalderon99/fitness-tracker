@@ -3,6 +3,7 @@ import {Subject, Subscription} from "rxjs";
 import {map} from "rxjs/operators";
 import {Injectable} from "@angular/core";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {UiService} from "../shared/ui.service";
 
 @Injectable()
 export class TrainingService {
@@ -13,11 +14,13 @@ export class TrainingService {
   private availableExercises: Exercise[] = [];
   private runningExercise: Exercise | null | undefined;
   private firebaseSubscriptions: Subscription[] = [];
+  private fetchErrorMsg: string = 'Fetching exercises failed, please try again later';
 
-  constructor(private angularFirestore: AngularFirestore) {
+  constructor(private angularFirestore: AngularFirestore, private uiService: UiService) {
   }
 
   public fetchAvailableExercises(): void {
+    this.uiService.loadingStateChanged.next(true);
     this.firebaseSubscriptions.push(this.angularFirestore.collection('availableExercises')
       .snapshotChanges().pipe(map(docArray => {
         return docArray.map(doc => {
@@ -28,11 +31,14 @@ export class TrainingService {
         })
       })).subscribe({
         next: (exercises: Exercise[]) => {
+          this.uiService.loadingStateChanged.next(false);
           this.availableExercises = exercises;
           this.exercisesChanged.next([...this.availableExercises]);
         },
-        error: (error) => {
-          console.log(error);
+        error: () => {
+          this.uiService.loadingStateChanged.next(false);
+          this.uiService.showSnackBar(this.fetchErrorMsg, null, 3000);
+          this.exerciseChanged.next(null);
         }
       }));
   }
@@ -64,10 +70,6 @@ export class TrainingService {
     return <Exercise>{...this.runningExercise};
   }
 
-  private addDataToDb(exercise: Exercise) {
-    this.angularFirestore.collection('finishedExercises').add(exercise);
-  }
-
   public fetchCompletedOrCanceledExercises() {
     this.firebaseSubscriptions.push(this.angularFirestore.collection('finishedExercises')
       .valueChanges()
@@ -75,11 +77,20 @@ export class TrainingService {
         next: (exercises: Exercise[]) => {
           this.finishedExercisesChanged.next(exercises);
         },
-        error: (error) => console.log(error)
+        error: () => {
+          this.uiService.loadingStateChanged.next(false);
+          this.uiService.showSnackBar(this.fetchErrorMsg, null, 3000)
+        }
       }))
   }
 
   public cancelSubscriptions(): void {
     this.firebaseSubscriptions.forEach((sub: Subscription) => sub.unsubscribe());
+  }
+
+  private addDataToDb(exercise: Exercise) {
+    this.angularFirestore.collection('finishedExercises').add(exercise).then().catch(error => {
+      this.uiService.showSnackBar(error, null, 3000);
+    });
   }
 }
