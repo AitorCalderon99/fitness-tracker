@@ -5,6 +5,7 @@ import {AuthGuard} from "@angular/fire/auth-guard";
 
 const routes: Routes = [
   {path: '', component: WelcomeComponent},
+  {path: 'training', loadChildren: () => import('./training/training.module').then(m => m.TrainingModule)}
 ];
 
 @NgModule({

@@ -14,9 +14,8 @@ import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from "../environments/environment";
 import {UiService} from "./shared/ui.service";
 import {AuthModule} from "./auth/auth.module";
-import {TrainingModule} from "./training/training.module";
 import {SharedModule} from "./shared/shared.module";
-
+import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 
 @NgModule({
   declarations: [
@@ -34,7 +33,7 @@ import {SharedModule} from "./shared/shared.module";
     AngularFireModule.initializeApp(environment.firebase),
     SharedModule,
     AuthModule,
-    TrainingModule
+    AngularFirestoreModule
   ],
   providers: [AuthService, TrainingService, UiService],
   bootstrap: [AppComponent]
