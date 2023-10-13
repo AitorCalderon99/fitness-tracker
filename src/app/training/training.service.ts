@@ -85,7 +85,7 @@ export class TrainingService {
   }
 
   public cancelSubscriptions(): void {
-    this.firebaseSubscriptions.forEach((sub: Subscription) => sub.unsubscribe());
+    this.firebaseSubscriptions.forEach((sub: Subscription) => sub?.unsubscribe());
   }
 
   private addDataToDb(exercise: Exercise) {
