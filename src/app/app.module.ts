@@ -15,6 +15,7 @@ import {environment} from "../environments/environment";
 import {UiService} from "./shared/ui.service";
 import {AuthModule} from "./auth/auth.module";
 import {TrainingModule} from "./training/training.module";
+import {SharedModule} from "./shared/shared.module";
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import {TrainingModule} from "./training/training.module";
     AppRoutingModule,
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebase),
+    SharedModule,
     AuthModule,
     TrainingModule
   ],
