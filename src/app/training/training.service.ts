@@ -4,6 +4,9 @@ import {map} from "rxjs/operators";
 import {Injectable} from "@angular/core";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {UiService} from "../shared/ui.service";
+import {Store} from "@ngrx/store";
+import * as fromRoot from "../app.reducer";
+import * as UI from "../shared/ui.actions";
 
 @Injectable()
 export class TrainingService {
@@ -16,11 +19,11 @@ export class TrainingService {
   private firebaseSubscriptions: Subscription[] = [];
   private fetchErrorMsg: string = 'Fetching exercises failed, please try again later';
 
-  constructor(private angularFirestore: AngularFirestore, private uiService: UiService) {
+  constructor(private angularFirestore: AngularFirestore, private uiService: UiService, private store: Store<fromRoot.State>) {
   }
 
   public fetchAvailableExercises(): void {
-    this.uiService.loadingStateChanged.next(true);
+    this.store.dispatch(new UI.StartLoading);
     this.firebaseSubscriptions.push(this.angularFirestore.collection('availableExercises')
       .snapshotChanges().pipe(map(docArray => {
         return docArray.map(doc => {
@@ -31,12 +34,12 @@ export class TrainingService {
         })
       })).subscribe({
         next: (exercises: Exercise[]) => {
-          this.uiService.loadingStateChanged.next(false);
+          this.store.dispatch(new UI.StopLoading);
           this.availableExercises = exercises;
           this.exercisesChanged.next([...this.availableExercises]);
         },
         error: () => {
-          this.uiService.loadingStateChanged.next(false);
+          this.store.dispatch(new UI.StopLoading);
           this.uiService.showSnackBar(this.fetchErrorMsg, null, 3000);
           this.exerciseChanged.next(null);
         }
@@ -78,7 +81,7 @@ export class TrainingService {
           this.finishedExercisesChanged.next(exercises);
         },
         error: () => {
-          this.uiService.loadingStateChanged.next(false);
+          this.store.dispatch(new UI.StopLoading);
           this.uiService.showSnackBar(this.fetchErrorMsg, null, 3000)
         }
       }))
