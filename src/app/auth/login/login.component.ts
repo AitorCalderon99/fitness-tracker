@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../auth.service";
-import {UiService} from "../../shared/ui.service";
 import {Observable} from "rxjs";
 import {Store} from "@ngrx/store";
-import * as fromApp from "../../app.reducer";
-import {map} from "rxjs/operators";
+import * as fromRoot from "../../app.reducer";
 
 @Component({
   selector: 'app-login',
@@ -20,9 +18,7 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', {validators: [Validators.required]}),
   });
 
-  constructor(private authService: AuthService, private uiService: UiService, private store: Store<{
-    ui: fromApp.State
-  }>) {
+  constructor(private authService: AuthService, private store: Store<fromRoot.State>) {
   }
 
   onFormSubmit(): void {
@@ -33,6 +29,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isLoading$ = this.store.pipe(map((state: { ui: fromApp.State }) => state.ui.isLoading))
+    this.isLoading$ = this.store.select(fromRoot.getIsLoading);
   }
 }
