@@ -36,7 +36,7 @@ import {reducers} from "./app.reducer";
     SharedModule,
     AuthModule,
     AngularFirestoreModule,
-    StoreModule.forRoot(reducers)
+    StoreModule.forRoot(reducers),
   ],
   providers: [AuthService, TrainingService, UiService],
   bootstrap: [AppComponent]
