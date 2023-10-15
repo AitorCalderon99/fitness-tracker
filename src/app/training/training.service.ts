@@ -15,7 +15,6 @@ import * as TRAINING from "./training.actions";
 export class TrainingService {
 
   exerciseChanged = new Subject<Exercise | null>();
-  finishedExercisesChanged = new Subject<Exercise[]>();
   private firebaseSubscriptions: Subscription[] = [];
   private fetchErrorMsg: string = 'Fetching exercises failed, please try again later';
 
