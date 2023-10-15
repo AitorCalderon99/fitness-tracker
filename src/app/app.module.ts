@@ -18,6 +18,7 @@ import {SharedModule} from "./shared/shared.module";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {StoreModule} from "@ngrx/store";
 import {reducers} from "./app.reducer";
+import {StoreDevtoolsModule} from "@ngrx/store-devtools";
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import {reducers} from "./app.reducer";
     AuthModule,
     AngularFirestoreModule,
     StoreModule.forRoot(reducers),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: false })
   ],
   providers: [AuthService, TrainingService, UiService],
   bootstrap: [AppComponent]
