@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {TrainingService} from "./training.service";
 import {Store} from "@ngrx/store";
 import * as fromTraining from "./training.reducer";
-import {getIsExercising} from "./training.reducer";
 import {Observable} from "rxjs";
 
 @Component({
@@ -13,10 +11,10 @@ import {Observable} from "rxjs";
 export class TrainingComponent implements OnInit {
   onGoingTraining$: Observable<boolean>;
 
-  constructor(private trainingService: TrainingService, private store: Store<fromTraining.State>) {
+  constructor(private store: Store<fromTraining.State>) {
   }
 
   ngOnInit(): void {
-    this.onGoingTraining$ = this.store.select(getIsExercising);
+    this.onGoingTraining$ = this.store.select(fromTraining.getIsExercising);
   }
 }
