@@ -5,6 +5,7 @@ import {TrainingService} from "../training.service";
 import {Exercise} from "../exercise.model";
 import {Store} from "@ngrx/store";
 import * as fromTraining from "../training.reducer";
+import {take} from "rxjs";
 
 
 @Component({
@@ -24,7 +25,7 @@ export class CurrentTrainingComponent implements OnInit {
   }
 
   startInterval() {
-    this.store.select(fromTraining.getActiveExercise).subscribe((exercise: Exercise) => {
+    this.store.select(fromTraining.getActiveExercise).pipe(take(1)).subscribe((exercise: Exercise) => {
       const step: number = exercise?.duration / 100 * 1000;
 
       this.progressInterval = setInterval(() => {

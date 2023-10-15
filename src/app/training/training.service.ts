@@ -1,12 +1,11 @@
 import {Exercise} from "./exercise.model";
-import {Subject, Subscription, take} from "rxjs";
+import {Subscription, take} from "rxjs";
 import {map} from "rxjs/operators";
 import {Injectable} from "@angular/core";
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {UiService} from "../shared/ui.service";
 import {Store} from "@ngrx/store";
 import * as fromTraining from "./training.reducer";
-import {getActiveExercise} from "./training.reducer";
 import * as UI from "../shared/ui.actions";
 import * as TRAINING from "./training.actions";
 
@@ -14,7 +13,6 @@ import * as TRAINING from "./training.actions";
 @Injectable()
 export class TrainingService {
 
-  exerciseChanged = new Subject<Exercise | null>();
   private firebaseSubscriptions: Subscription[] = [];
   private fetchErrorMsg: string = 'Fetching exercises failed, please try again later';
 
@@ -34,12 +32,11 @@ export class TrainingService {
       })).subscribe({
         next: (exercises: Exercise[]) => {
           this.store.dispatch(new UI.StopLoading);
-          this.store.dispatch(new TRAINING.SetAvailableTrainings(exercises))
+          this.store.dispatch(new TRAINING.SetAvailableTrainings(exercises));
         },
         error: () => {
           this.store.dispatch(new UI.StopLoading);
           this.uiService.showSnackBar(this.fetchErrorMsg, null, 3000);
-          this.exerciseChanged.next(null);
         }
       }));
   }
@@ -49,18 +46,18 @@ export class TrainingService {
   }
 
   public completeExercise() {
-    this.store.select(getActiveExercise).subscribe((exercise: Exercise) => {
+    this.store.select(fromTraining.getActiveExercise).pipe(take(1)).subscribe((exercise: Exercise) => {
       this.addDataToDb(<Exercise>{...exercise, date: new Date(), state: "completed"});
       this.store.dispatch(new TRAINING.StopTraining())
     });
   }
 
   public cancelExercise(progress: number) {
-    this.store.select(getActiveExercise).pipe(take(1)).subscribe((exercise: Exercise) => {
+    this.store.select(fromTraining.getActiveExercise).pipe(take(1)).subscribe((exercise: Exercise) => {
       this.addDataToDb(<Exercise>{
         ...exercise,
-        duration: exercise?.duration ? exercise.duration * (progress / 100) : undefined,
-        calories: exercise?.calories ? exercise.calories * (progress / 100) : undefined,
+        duration: exercise.duration ? exercise.duration * (progress / 100) : undefined,
+        calories: exercise.calories ? exercise.calories * (progress / 100) : undefined,
         date: new Date(),
         state: "cancelled"
       });
@@ -87,8 +84,7 @@ export class TrainingService {
   }
 
   private addDataToDb(exercise: Exercise) {
-    this.angularFirestore.collection('finishedExercises').add(exercise).then().catch(error => {
-      this.uiService.showSnackBar(error, null, 3000);
-    });
+    this.angularFirestore.collection('finishedExercises').add(exercise).then(r => console.log(r));
+
   }
 }
