@@ -1,0 +1,23 @@
+<section class="signup-form">
+  <form fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px" #singUpForm=ngForm (ngSubmit)="onFormSubmit(singUpForm)">
+    <mat-form-field>
+      <input type="email" matInput placeholder="Your email" ngModel name="email" email required #emailInput=ngModel>
+      <mat-error *ngIf="emailInput.hasError('required')">Email is required</mat-error>
+      <mat-error *ngIf="!emailInput.hasError('required') && !emailInput.valid">Email is invalid</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="password" matInput placeholder="Your password" ngModel name="password" required minlength="6">
+      <mat-hint>At least 6 characters long</mat-hint>
+      <mat-error>Has to be at least 6 characters long</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input name="birthdayInput" type="text" [matDatepicker]="birthdayPicker" [max]="maxDate" matInput placeholder="Birthdate" ngModel>
+      <mat-datepicker-toggle [for]="birthdayPicker">
+        <mat-datepicker #birthdayPicker></mat-datepicker>
+      </mat-datepicker-toggle>
+    </mat-form-field>
+    <mat-checkbox required ngModel name="conditionsCheckbox" color="primary">Agree to terms and conditions</mat-checkbox>
+    <button *ngIf="!(isLoading$ | async)" type="submit" mat-raised-button color="primary" [disabled]="singUpForm.invalid === true">Submit</button>
+    <mat-spinner *ngIf="(isLoading$ | async)"></mat-spinner>
+  </form>
+</section>

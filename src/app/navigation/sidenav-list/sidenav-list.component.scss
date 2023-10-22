@@ -1,0 +1,16 @@
+mat-nav-list {
+  a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+
+    mat-icon {
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    span {
+      vertical-align: middle;
+    }
+  }
+}
