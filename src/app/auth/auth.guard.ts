@@ -1,14 +1,11 @@
 import {inject} from '@angular/core';
-import {Router} from '@angular/router';
-import {AuthService} from "./auth.service";
+import * as fromRoot from "../app.reducer";
+import {Store} from "@ngrx/store";
+import {Observable} from "rxjs";
 
-export const trainingGuard = (): boolean => {
-  const router = inject(Router);
-  const authService = inject(AuthService)
-  if (authService.isAuth()) {
-    return true;
-  } else {
-    router.navigate(['/login']);
-    return false;
-  }
+
+export const trainingGuard = (): Observable<boolean> => {
+  const store = inject(Store<fromRoot.State>)
+
+  return store.select(fromRoot.getIsAuthenticated);
 }
