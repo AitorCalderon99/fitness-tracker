@@ -60,7 +60,7 @@ It has a complete authentication system, you can freely create users. Fit and pe
 
 ### Built With
 
-This project has been built with angular 12+ and bootstrap.
+This project has been built with angular 16+, SASS, Angular Material and Firebase for backend.
 
 Used Angular Features:
   - NGRX
